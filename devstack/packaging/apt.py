@@ -45,7 +45,8 @@ class AptPackager(pack.Packager):
         pack.Packager.__init__(self, distro)
 
     def _format_version(self, name, version):
-        return VERSION_TEMPL % (name, version)
+        #return VERSION_TEMPL % (name, version)
+        return name
 
     def _format_pkg(self, name, version):
         if version and len(version):
