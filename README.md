@@ -64,6 +64,7 @@ This will typically produce:
 * easy_install netifaces (used to determine host ip information)
     * In ubuntu oneiric / debian *apt-get install python-pip* and *apt-get install python-dev*
 * mysql !!!!!
+    * In ubuntu oneiric / debian *apt-get install mysql-server*
 
 ## Stack development prerequisites
 * pylint
