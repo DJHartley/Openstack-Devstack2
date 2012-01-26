@@ -23,6 +23,7 @@ LOG = logging.getLogger("devstack.settings")
 
 # These also have meaning outside python,
 # ie in the pkg/pip listings so update there also!
+DEBIAN7 = "debian-wheezy"
 UBUNTU11 = "ubuntu-oneiric"
 RHEL6 = "rhel-6"
 
@@ -131,6 +132,7 @@ STACK_CONFIG_LOCATION = os.path.join(STACK_CONFIG_DIR, "stack.ini")
 
 # These regex is how we match python platform output to a known constant
 KNOWN_DISTROS = {
+    DEBIAN7: re.compile('Debian(.*)wheezy(.*)', re.IGNORECASE),
     UBUNTU11: re.compile('Ubuntu(.*)oneiric', re.IGNORECASE),
     RHEL6: re.compile('redhat-6\.(\d+)', re.IGNORECASE),
 }

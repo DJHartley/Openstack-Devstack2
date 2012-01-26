@@ -42,6 +42,7 @@ LOG = logging.getLogger("devstack.progs.actions")
 #this map controls which distro has
 #which package management class
 _PKGR_MAP = {
+    settings.DEBIAN7: apt.AptPackager,
     settings.UBUNTU11: apt.AptPackager,
     settings.RHEL6: yum.YumPackager,
 }
