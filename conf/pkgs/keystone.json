@@ -5,7 +5,7 @@
     # that we are trying to align other distributions with.
     "ubuntu-oneiric": {
         "python-eventlet": {
-            "version": "0.9.15-0ubuntu4",
+            "version": "0.9.15-0",
             "allowed": ">=",
             "removable": true
         },
@@ -20,7 +20,7 @@
             "removable": true
         },
         "python-mysqldb": {
-            "version": "1.2.3-0ubuntu1",
+            "version": "1.2.3-0",
             "allowed": ">=",
             "removable": true
         },
@@ -30,12 +30,12 @@
             "removable": true
         },
         "python-paste": {
-            "version": "1.7.5.1-4ubuntu1",
+            "version": "1.7.5.1-4",
             "allowed": ">=",
             "removable": true
         },
         "sqlite3": {
-            "version": "3.7.7-2ubuntu2",
+            "version": "3.7.7-2",
             "allowed": ">=",
             "removable": true
         },
@@ -55,7 +55,7 @@
             "removable": true
         },
         "python-greenlet": {
-            "version": "0.3.1-1ubuntu4",
+            "version": "0.3.1-1",
             "allowed": ">=",
             "removable": true
         },
@@ -66,11 +66,83 @@
         },
         "libldap2-dev": {
             "removable": true,
-            "version": "2.4.25-1.1ubuntu4.1",
+            "version": "2.4.25-1.1",
             "removable": true
         },
         "libsasl2-dev": {
-            "version": "2.1.24~rc1.dfsg1+cvs2011-05-23-4ubuntu2",
+            "version": "2.1.24~rc1.dfsg1+cvs2011-05-23-4",
+            "allowed": ">=",
+            "removable": true
+        }
+    },
+    "debian-wheezy": {
+        "python-eventlet": {
+            "version": "0.9.15-0",
+            "allowed": ">=",
+            "removable": true
+        },
+        "python-lxml": {
+            "version": "2.3-0.1build1",
+            "allowed": ">=",
+            "removable": true
+        },
+        "python-pastescript": {
+            "version": "1.7.3-7",
+            "allowed": ">=",
+            "removable": true
+        },
+        "python-mysqldb": {
+            "version": "1.2.3-0",
+            "allowed": ">=",
+            "removable": true
+        },
+        "python-pastedeploy": {
+            "version": "1.5.0-2",
+            "allowed": ">=",
+            "removable": true
+        },
+        "python-paste": {
+            "version": "1.7.5.1-4",
+            "allowed": ">=",
+            "removable": true
+        },
+        "sqlite3": {
+            "version": "3.7.7-2",
+            "allowed": ">=",
+            "removable": true
+        },
+        "python-pysqlite2": {
+            "version": "2.6.3-2",
+            "allowed": ">=",
+            "removable": true
+        },
+        "python-sqlalchemy": {
+            "version": "0.6.8-1",
+            "allowed": ">=",
+            "removable": true
+        },
+        "python-webob": {
+            "version": "1.0.8-1",
+            "allowed": ">=",
+            "removable": true
+        },
+        "python-greenlet": {
+            "version": "0.3.1-1",
+            "allowed": ">=",
+            "removable": true
+        },
+        "python-routes": {
+            "version": "1.12.3-1",
+            "allowed": ">=",
+            "removable": true
+        },
+        "libldap2-dev": {
+            "removable": true,
+            "version": "2.4.25-1.1",
+            "removable": true
+        },
+        "libsasl2-dev": {
+            "version": "2.1.24~rc1.dfsg1+cvs2011-05-23-4",
             "allowed": ">=",
             "removable": true
         }

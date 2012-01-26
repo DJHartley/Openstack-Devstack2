@@ -15,6 +15,18 @@
             "removable": true
         }
     },
+    "debian-wheezy": {
+        "openvswitch-switch": {
+            "version": "1.2.0-1",
+            "allowed": ">=",
+            "removable": true
+        },
+        "openvswitch-datapath-dkms": {
+            "version": "1.2.0-1",
+            "allowed": ">=",
+            "removable": true
+        }
+    },
     "rhel-6": {
         #TBD
     }

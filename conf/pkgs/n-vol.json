@@ -16,6 +16,19 @@
             "removable": true
         }
     },
+    "debian-wheezy": {
+        # Linux SCSI target framework
+        "tgt": {
+            "version": "1:1.0.17-1",
+            "allowed": ">=",
+            "removable": true
+        },
+        "lvm2": {
+            "version": "2.02.66-4",
+            "allowed": ">=",
+            "removable": true
+        }
+    },
     "rhel-6": {
         # Unless otherwise noted the versions may be slightly
         # different, but for common utilities this should not be a critical

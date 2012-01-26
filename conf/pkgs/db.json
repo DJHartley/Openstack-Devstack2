@@ -39,6 +39,42 @@
             ]
         }
     },
+    "debian-wheezy": {
+        "mysql-client-5.1": {
+            "version": "5.1.58-1",
+            "allowed": ">=",
+            "removable": true
+        },
+        "mysql-server-core-5.1": {
+            "version": "5.1.58-1",
+            "allowed": ">=",
+            "removable": true
+        },
+        "mysql-common": {
+            "version": "5.1.58-1",
+            "allowed": ">=",
+            "removable": true
+        },
+        "mysql-server-5.1": {
+            "version": "5.1.58-1",
+            "allowed": ">=",
+            "removable": true,
+            "pre-install": [
+                {
+                    # This apparently is a action needed for ubuntu/debian to not prompt for passwords...
+                    "run_as_root": true,
+                    "cmd": [
+                        "debconf-set-selections"
+                    ],
+                    "stdin": [
+                        "mysql-server-5.1 mysql-server/root_password password %PASSWORD%",
+                        "mysql-server-5.1 mysql-server/root_password_again password %PASSWORD%",
+                        "mysql-server-5.1 mysql-server/start_on_boot boolean %BOOT_START%"
+                    ]
+                }
+            ]
+        }
+    },
     "rhel-6": {
         # Unless otherwise noted the versions may be slightly
         # different, but for common utilities this should not be a critical

@@ -10,6 +10,13 @@
             "removable": true
         }
     },
+    "debian-wheezy": {
+        "rabbitmq-server": {
+            "version": "2.5.0-1",
+            "allowed": ">=",
+            "removable": true
+        }
+    },
     "rhel-6": {
         # Unless otherwise noted the versions may be slightly
         # different, but for common utilities this should not be a critical

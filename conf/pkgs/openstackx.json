@@ -16,6 +16,19 @@
         #    "removable": true
         #},
     },
+    "debian-wheezy": {
+        "python-httplib2": {
+            "version": "0.7.1-1",
+            "allowed": ">=",
+            "removable": true
+        }
+        # Not needed unless less than python 2.6 (not our case)
+        #"python-simplejson": {
+        #    "version": "2.1.6-1",
+        #    "allowed": ">=",
+        #    "removable": true
+        #},
+    },
     "rhel-6": {
         # Unless otherwise noted the versions may be slightly
         # different, but for common utilities this should not be a critical
