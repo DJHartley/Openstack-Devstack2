@@ -76,6 +76,11 @@
         }
     },
     "debian-wheezy": {
+        "python-passlib": {
+            "version": "1.5.3-2",
+            "allowed": ">=",
+            "removable": true
+        },
         "python-eventlet": {
             "version": "0.9.15-0",
             "allowed": ">=",
