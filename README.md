@@ -55,14 +55,14 @@ This will typically produce:
 
 # Stack prerequisites
 
-* linux (tested on ubuntu 11 (aka oneiric) and rhel 6.2 (TBD))
+* linux (tested on ubuntu 11 (aka oneiric), debian wheezy (next release) and rhel 6.2 (TBD))
 * python 2.6 or 2.7 (not tested with python 3.0)
 * git
-    * In ubuntu oneiric *apt-get install git*
+    * In ubuntu oneiric / debian *apt-get install git*
 * easy_install termcolor (used for colored console logging)
-    * In ubuntu oneiric *apt-get install python-pip*
+    * In ubuntu oneiric / debian *apt-get install python-pip*
 * easy_install netifaces (used to determine host ip information)
-    * In ubuntu oneiric *apt-get install python-pip* and *apt-get install python-dev*
+    * In ubuntu oneiric / debian *apt-get install python-pip* and *apt-get install python-dev*
  
 # Actions
 
