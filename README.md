@@ -63,6 +63,7 @@ This will typically produce:
     * In ubuntu oneiric / debian *apt-get install python-pip*
 * easy_install netifaces (used to determine host ip information)
     * In ubuntu oneiric / debian *apt-get install python-pip* and *apt-get install python-dev*
+* mysql !!!!!
 
 ## Stack development prerequisites
 * pylint
