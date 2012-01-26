@@ -63,10 +63,6 @@ This will typically produce:
     * In ubuntu oneiric / debian *apt-get install python-pip*
 * easy_install netifaces (used to determine host ip information)
     * In ubuntu oneiric / debian *apt-get install python-pip* and *apt-get install python-dev*
-* mysql !!!!!
-    * In ubuntu oneiric / debian *apt-get install mysql-server*
-* sudo! - even when running as root! (btw, it doesn't check if its not already running as root...)
-    * *apt-get install sudo* and then add yourself to allow sudo!
 
 ## Stack development prerequisites
 * pylint
