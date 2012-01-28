@@ -1,5 +1,6 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
+#    Copyright (C) 2012 Yahoo! Inc. All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -197,19 +198,16 @@ def create_db(cfg, dbname):
 
 
 def describe(opts=None):
-    description = """ Module: {module_name}
+    description = """
+ Module: {module_name}
   Description:
-   Handles actions for the database component.
+   {description}
   Component options:
    {component_opts}
-  Provides:
-   {provides_what}
 """
     params = dict()
-    params['component_opts'] = "N/A"
+    params['component_opts'] = "TBD"
     params['module_name'] = __name__
-    provides = [DBRuntime.__name__,
-                DBInstaller.__name__,
-                DBUninstaller.__name__]
-    params['provides_what'] = ", ".join(sorted(provides))
-    return description.format(**params)
+    params['description'] = __doc__ or "Handles actions for the db component."
+    out = description.format(**params)
+    return out.strip("\n")

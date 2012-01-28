@@ -1,5 +1,6 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
+#    Copyright (C) 2012 Yahoo! Inc. All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -40,8 +41,8 @@ CFG_SECTION = 'DEFAULT'
 #this db will be dropped and created
 DB_NAME = "glance"
 
-#special subcomponents that is used in starting to know that images should be uploaded
-IMG_START = "upload-images"
+#special subcomponents/options that are used in starting to know that images should be uploaded
+NO_IMG_START = "no-image-upload"
 
 #what to start
 APP_OPTIONS = {
@@ -79,7 +80,7 @@ class GlanceRuntime(comp.PythonRuntime):
 
     def post_start(self):
         comp.PythonRuntime.post_start(self)
-        if IMG_START in self.component_opts:
+        if NO_IMG_START not in self.component_opts:
             #install any images that need activating...
             creator.ImageCreationService(self.cfg).install()
 
@@ -174,19 +175,19 @@ class GlanceInstaller(comp.PythonInstallComponent):
 
 
 def describe(opts=None):
-    description = """ Module: {module_name}
+    description = """
+ Module: {module_name}
   Description:
-   Handles actions for the glance component.
+   {description}
   Component options:
    {component_opts}
-  Provides:
-   {provides_what}
+"""
+    copts = """
+ {no_img_upload} - disables upload of test images to glance.
 """
     params = dict()
-    params['component_opts'] = "TBD"
+    params['component_opts'] = copts.strip("\n").format(no_img_upload=NO_IMG_START)
     params['module_name'] = __name__
-    provides = [GlanceRuntime.__name__,
-                GlanceInstaller.__name__,
-                GlanceUninstaller.__name__]
-    params['provides_what'] = ", ".join(sorted(provides))
-    return description.format(**params)
+    params['description'] = __doc__ or "Handles actions for the glance component."
+    out = description.format(**params)
+    return out.strip("\n")

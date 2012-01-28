@@ -1,5 +1,9 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
+#    Copyright (C) 2012 Yahoo! Inc. All Rights Reserved.
+#
+#    Copyright 2011 OpenStack LLC.
+#    All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -76,6 +80,23 @@ def execute_template(*cmds, **kargs):
     return cmd_results
 
 
+def to_bytes(text):
+    byte_val = 0
+    if not text:
+        return byte_val
+    if text[-1].upper() == 'G':
+        byte_val = int(text[:-1]) * 1024 ** 3
+    elif text[-1].upper() == 'M':
+        byte_val = int(text[:-1]) * 1024 ** 2
+    elif text[-1].upper() == 'K':
+        byte_val = int(text[:-1]) * 1024
+    elif text[-1].upper() == 'B':
+        byte_val = int(text[:-1])
+    else:
+        byte_val = int(text)
+    return byte_val
+
+
 def load_json(fn):
     data = sh.load_file(fn)
     lines = data.splitlines()
@@ -88,16 +109,16 @@ def load_json(fn):
     return json.loads(data)
 
 
-def get_host_ip():
+def get_host_ip(def_net_ifc, def_ip_version):
     ip = None
     interfaces = get_interfaces()
-    def_info = interfaces.get(settings.DEFAULT_NET_INTERFACE)
+    def_info = interfaces.get(def_net_ifc)
     if def_info:
-        ipinfo = def_info.get(settings.DEFAULT_NET_INTERFACE_IP_VERSION)
+        ipinfo = def_info.get(def_ip_version)
         if ipinfo:
             ip = ipinfo.get('addr')
     if ip is None:
-        msg = "Your host does not have an ip address!"
+        msg = "Your host does not have an ip address on interface: %s using ip version: %s!" % (def_net_ifc, def_ip_version)
         raise excp.NoIpException(msg)
     return ip
 
@@ -158,8 +179,9 @@ def get_pip_list(distro, component):
         return extract_pip_list(fns, distro)
 
 
-def extract_pkg_list(fns, distro):
-    all_pkgs = dict()
+def extract_pkg_list(fns, distro, all_pkgs=None):
+    if not all_pkgs:
+        all_pkgs = dict()
     for fn in fns:
         js = load_json(fn)
         distro_pkgs = js.get(distro)
@@ -291,8 +313,8 @@ def welcome(ident):
     lower += "|"
     welcome_header = _get_welcome_stack().strip("\n\r")
     max_line_len = len(max(welcome_header.splitlines(), key=len))
-    footer = colored(settings.PROG_NICE_NAME, 'green') + \
-                ": " + colored(lower, 'blue')
+    footer = colored(settings.PROG_NICE_NAME, 'green', attrs=['bold']) + \
+                ": " + colored(lower, 'blue', attrs=['bold'])
     uncolored_footer = (settings.PROG_NICE_NAME + ": " + lower)
     if max_line_len - len(uncolored_footer) > 0:
         #this format string wil center the uncolored text which
@@ -301,3 +323,4 @@ def welcome(ident):
         centered_str = center_text(uncolored_footer, " ", max_line_len)
         footer = centered_str.replace(uncolored_footer, footer)
     print((welcome_header + os.linesep + footer))
+    return ("-", max_line_len)

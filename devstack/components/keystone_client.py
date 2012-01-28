@@ -1,5 +1,6 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
+#    Copyright (C) 2012 Yahoo! Inc. All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -12,7 +13,6 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-
 
 from devstack import component as comp
 from devstack import log as logging
@@ -50,19 +50,16 @@ class KeyStoneClientRuntime(comp.EmptyRuntime):
 
 
 def describe(opts=None):
-    description = """ Module: {module_name}
+    description = """
+ Module: {module_name}
   Description:
-   Handles actions for the keystone client component.
+   {description}
   Component options:
    {component_opts}
-  Provides:
-   {provides_what}
 """
     params = dict()
     params['component_opts'] = "TBD"
     params['module_name'] = __name__
-    provides = [KeyStoneClientRuntime.__name__,
-                KeyStoneClientInstaller.__name__,
-                KeyStoneClientUninstaller.__name__]
-    params['provides_what'] = ", ".join(sorted(provides))
-    return description.format(**params)
+    params['description'] = __doc__ or "Handles actions for the keystone client component."
+    out = description.format(**params)
+    return out.strip("\n")

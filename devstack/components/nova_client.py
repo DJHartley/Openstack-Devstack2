@@ -1,5 +1,6 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
+#    Copyright (C) 2012 Yahoo! Inc. All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -42,14 +43,6 @@ class NovaClientInstaller(comp.PythonInstallComponent):
         })
         return places
 
-    def _get_param_map(self, config_fn):
-        #this dict will be used to fill in the configuration
-        #params with actual values
-        mp = dict()
-        mp['DEST'] = self.appdir
-        mp['OPENSTACK_HOST'] = self.cfg.get('host', 'ip')
-        return mp
-
 
 class NovaClientRuntime(comp.EmptyRuntime):
     def __init__(self, *args, **kargs):
@@ -57,19 +50,16 @@ class NovaClientRuntime(comp.EmptyRuntime):
 
 
 def describe(opts=None):
-    description = """ Module: {module_name}
+    description = """
+ Module: {module_name}
   Description:
-   Handles actions for the nova client component.
+   {description}
   Component options:
    {component_opts}
-  Provides:
-   {provides_what}
 """
     params = dict()
     params['component_opts'] = "TBD"
     params['module_name'] = __name__
-    provides = [NovaClientRuntime.__name__,
-                NovaClientUninstaller.__name__,
-                NovaClientInstaller.__name__]
-    params['provides_what'] = ", ".join(sorted(provides))
-    return description.format(**params)
+    params['description'] = __doc__ or "Handles actions for the nova client component."
+    out = description.format(**params)
+    return out.strip("\n")

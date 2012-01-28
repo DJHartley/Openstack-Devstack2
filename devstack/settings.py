@@ -1,5 +1,6 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
+#    Copyright (C) 2012 Yahoo! Inc. All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -16,6 +17,7 @@
 import operator
 import os.path
 import re
+import sys
 
 from devstack import log as logging
 
@@ -34,17 +36,16 @@ PROG_NICE_NAME = "DEVSTACK"
 PRE_INSTALL = 'pre-install'
 POST_INSTALL = 'post-install'
 
-# Default interfaces for network ip detection
+# Ip version constants for network ip detection
 IPV4 = 'IPv4'
 IPV6 = 'IPv6'
-DEFAULT_NET_INTERFACE = 'eth0'
-DEFAULT_NET_INTERFACE_IP_VERSION = IPV4
 
 # Component name mappings
 NOVA = "nova"
 NOVA_CLIENT = 'nova-client'
 GLANCE = "glance"
 QUANTUM = "quantum"
+QUANTUM_CLIENT = 'quantum-client'
 SWIFT = "swift"
 HORIZON = "horizon"
 KEYSTONE = "keystone"
@@ -54,15 +55,10 @@ RABBIT = "rabbit"
 OPENSTACK_X = 'openstack-x'
 NOVNC = 'novnc'
 
-# NCPU and NVOL are here as possible subcomponents of nova
-# Thus they are not in the component name map or priority or dep list...
-NCPU = "cpu"
-NVOL = "vol"
-
 COMPONENT_NAMES = [
     NOVA, NOVA_CLIENT,
     GLANCE,
-    QUANTUM,
+    QUANTUM, QUANTUM_CLIENT,
     SWIFT,
     HORIZON,
     KEYSTONE, KEYSTONE_CLIENT,
@@ -86,6 +82,7 @@ COMPONENT_NAMES_PRIORITY = {
     OPENSTACK_X: 6,
     NOVNC: 6,
     HORIZON: 10,
+    QUANTUM_CLIENT: 11,
 }
 
 # When a component is asked for it may
@@ -103,8 +100,10 @@ COMPONENT_DEPENDENCIES = {
     HORIZON: [KEYSTONE_CLIENT, GLANCE, NOVA_CLIENT, OPENSTACK_X],
     #the db isn't always a dependency (depending on the quantum component to be activated)
     #for now assume it is (TODO make it better?)
-    QUANTUM: [DB],
+    #the client isn't always needed either (TODO make it better?)
+    QUANTUM: [DB, QUANTUM_CLIENT],
     NOVNC: [],
+    QUANTUM_CLIENT: [],
 }
 
 # Default subdirs of a components root directory
@@ -133,8 +132,8 @@ STACK_CONFIG_LOCATION = os.path.join(STACK_CONFIG_DIR, "stack.ini")
 # These regex is how we match python platform output to a known constant
 KNOWN_DISTROS = {
     DEBIAN7: re.compile('Debian(.*)wheezy(.*)', re.IGNORECASE),
-    UBUNTU11: re.compile('Ubuntu(.*)oneiric', re.IGNORECASE),
-    RHEL6: re.compile('redhat-6\.(\d+)', re.IGNORECASE),
+    UBUNTU11: re.compile(r'Ubuntu(.*)oneiric', re.IGNORECASE),
+    RHEL6: re.compile(r'redhat-6\.2', re.IGNORECASE),
 }
 
 
@@ -162,6 +161,8 @@ PIP_MAP = {
         [],
     QUANTUM:
         [],
+    QUANTUM_CLIENT:
+        [],
 }
 
 # The pkg files that each component needs
@@ -170,9 +171,8 @@ PKG_MAP = {
         [
             os.path.join(STACK_PKG_DIR, "general.json"),
             os.path.join(STACK_PKG_DIR, "nova.json"),
+            #nova may add others in if it finds that u are asking for a additional components
         ],
-    QUANTUM:
-        [],
     NOVA_CLIENT:
         [
             os.path.join(STACK_PKG_DIR, "general.json"),
@@ -200,12 +200,19 @@ PKG_MAP = {
         ],
     KEYSTONE_CLIENT:
         [
+            os.path.join(STACK_PKG_DIR, "general.json"),
             os.path.join(STACK_PKG_DIR, "keystone-client.json"),
         ],
     QUANTUM:
         [
-            #quantum figures out its own pkgs
-            #they will be listed in the quantum component
+            os.path.join(STACK_PKG_DIR, "general.json"),
+            os.path.join(STACK_PKG_DIR, "quantum.json"),
+            #quantum may add others in if it finds that u are asking for a openvswitch
+        ],
+    QUANTUM_CLIENT:
+        [
+            os.path.join(STACK_PKG_DIR, "general.json"),
+            os.path.join(STACK_PKG_DIR, "quantum-client.json"),
         ],
     DB:
         [
@@ -217,21 +224,13 @@ PKG_MAP = {
         ],
     OPENSTACK_X:
         [
+            os.path.join(STACK_PKG_DIR, "general.json"),
             os.path.join(STACK_PKG_DIR, 'openstackx.json'),
         ],
     NOVNC:
         [
             os.path.join(STACK_PKG_DIR, 'n-vnc.json'),
         ],
-    NCPU:
-        [
-            os.path.join(STACK_PKG_DIR, 'n-cpu.json'),
-        ],
-    NVOL:
-        [
-            os.path.join(STACK_PKG_DIR, 'n-vol.json'),
-        ],
-
 }
 
 
@@ -278,9 +277,7 @@ def parse_components(components, assume_all=False):
         mtch = EXT_COMPONENT.match(c)
         if mtch:
             component_name = mtch.group(1).lower().strip()
-            if component_name not in COMPONENT_NAMES:
-                LOG.warn("Unknown component named %s" % (component_name))
-            else:
+            if component_name in COMPONENT_NAMES:
                 component_opts = mtch.group(2)
                 components_opts_cleaned = list()
                 if not component_opts:
@@ -292,8 +289,6 @@ def parse_components(components, assume_all=False):
                         if cleaned_opt:
                             components_opts_cleaned.append(cleaned_opt)
                 adjusted_components[component_name] = components_opts_cleaned
-        else:
-            LOG.warn("Unparseable component %s" % (c))
     #should we adjust them to be all the components?
     if not adjusted_components and assume_all:
         all_components = dict()

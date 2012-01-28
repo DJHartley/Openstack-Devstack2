@@ -5,39 +5,36 @@
     # that we are trying to align other distributions with.
     # The versions should at least be major + minor!
     "ubuntu-oneiric": {
-        # Stuff for diablo volumes
-        "lvm2": {
-            "version": "2.02*",
+        "python-eventlet": {
+            "version": "0.9*",
             "removable": true
         },
-        "open-iscsi": {
-            "version": "2.0*",
+        "python-greenlet": {
+            "version": "0.3*",
             "removable": true
         },
-        "open-iscsi-utils": {
-            "version": "2.0*",
-            "removable": true
-        }
-    },
-    "debian-wheezy": {
-        # Stuff for diablo volumes
-        "lvm2": {
-            "version": "2.02.66-4",
-            "allowed": ">=",
+        "python-routes": {
+            "version": "1.12*",
             "removable": true
         },
-        "open-iscsi": {
-            "version": "2.0.871-0",
-            "allowed": ">=",
+        "python-lxml": {
+            "version": "2.3*",
             "removable": true
         },
-        "open-iscsi-utils": {
-            "version": "2.0.871-0",
-            "allowed": ">=",
+        "python-paste": {
+            "version": "1.7*",
+            "removable": true
+        },
+        "python-gflags": {
+            "version": "1.5*",
+            "removable": true
+        },
+        "python-pastedeploy": {
+            "version": "1.5*",
             "removable": true
         }
     },
     "rhel-6": {
-        # TBD
+        #TBD
     }
 }

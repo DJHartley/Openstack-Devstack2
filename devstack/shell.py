@@ -1,5 +1,6 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
+#    Copyright (C) 2012 Yahoo! Inc. All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -58,7 +59,7 @@ def execute(*cmd, **kwargs):
         LOG.debug('Running shell cmd: [%s]' % (str_cmd))
     else:
         execute_cmd = cmd
-        LOG.debug('Running cmd: [%s]' % (' '.join(str_cmd)))
+        LOG.debug('Running cmd: [%s]' % (str_cmd))
 
     if process_input is not None:
         LOG.debug('With stdin: %s' % (process_input))
@@ -220,12 +221,12 @@ def write_file(fn, text, flush=True, quiet=False):
             f.flush()
 
 
-def touch_file(fn, die_if_there=True, quiet=False):
+def touch_file(fn, die_if_there=True, quiet=False, file_size=0):
     if not isfile(fn):
         if not quiet:
             LOG.debug("Touching and truncating file %s", fn)
         with open(fn, "w") as f:
-            f.truncate(0)
+            f.truncate(file_size)
     else:
         if die_if_there:
             msg = "Can not touch file %s since it already exists" % (fn)

@@ -1,5 +1,6 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
+#    Copyright (C) 2012 Yahoo! Inc. All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -20,14 +21,23 @@ import ConfigParser
 from devstack import env
 from devstack import exceptions as excp
 from devstack import log as logging
+from devstack import settings
 from devstack import shell as sh
 from devstack import utils
+
 
 LOG = logging.getLogger("devstack.cfg")
 PW_TMPL = "Enter a password for %s: "
 ENV_PAT = re.compile(r"^\s*\$\{([\w\d]+):\-(.*)\}\s*$")
 SUB_MATCH = re.compile(r"(?:\$\(([\w\d]+):([\w\d]+))\)")
 CACHE_MSG = "(value will now be internally cached)"
+DEF_PW_MSG = "[or press enter to get a generated one]"
+PW_PROMPTS = {
+    'horizon_keystone_admin': "Enter a password to use for horizon and keystone (20 chars or less) %s: " % (DEF_PW_MSG),
+    'service_token': 'Enter a token to use for the service admin token %s: ' % (DEF_PW_MSG),
+    'sql': 'Enter a password to use for your sql database user %s: ' % (DEF_PW_MSG),
+    'rabbit': 'Enter a password to use for your rabbit user %s: ' % (DEF_PW_MSG),
+}
 
 
 class IgnoreMissingConfigParser(ConfigParser.RawConfigParser):
@@ -89,13 +99,18 @@ class EnvConfigParser(ConfigParser.RawConfigParser):
             return value_gotten
         if section == 'host' and option == 'ip':
             LOG.debug("Host ip from configuration/environment was empty, programatically attempting to determine it.")
-            host_ip = utils.get_host_ip()
-            LOG.debug("Determined host ip to be: \"%s\"" % (host_ip))
+            netifc = self.get("default", "net_interface") or "eth0"
+            netifc = netifc.strip()
+            host_ip = utils.get_host_ip(netifc, settings.IPV4)
+            LOG.debug("Determined host ip to be: \"%s\" from network interface: %s" % (host_ip, netifc))
             return host_ip
         elif section == 'passwords':
             key = self._makekey(section, option)
             LOG.debug("Being forced to ask for password for \"%s\" since the configuration/environment value is empty.", key)
-            pw = sh.password(PW_TMPL % (key))
+            prompt = PW_PROMPTS.get(option)
+            if not prompt:
+                prompt = PW_TMPL % (key)
+            pw = sh.password(prompt)
             self.pws[key] = pw
             return pw
         else:
@@ -158,13 +173,13 @@ class EnvConfigParser(ConfigParser.RawConfigParser):
         return extracted_val
 
     def get_dbdsn(self, dbname):
+        #check the dsn cache
+        if dbname in self.db_dsns:
+            return self.db_dsns[dbname]
         user = self.get("db", "sql_user")
         host = self.get("db", "sql_host")
         port = self.get("db", "port")
         pw = self.get("passwords", "sql")
-        #check the dsn cache
-        if dbname in self.db_dsns:
-            return self.db_dsns[dbname]
         #form the dsn (from components we have...)
         #dsn = "<driver>://<username>:<password>@<host>:<port>/<database>"
         if not host:

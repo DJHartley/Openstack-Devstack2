@@ -5,15 +5,8 @@
     # that we are trying to align other distributions with.
     # The versions should at least be major + minor!
     "ubuntu-oneiric": {
-        "rabbitmq-server": {
-            "version": "2.5*",
-            "removable": true
-        }
-    },
-    "debian-wheezy": {
-        "rabbitmq-server": {
-            "version": "2.5.0-1",
-            "allowed": ">=",
+        "python-dateutil": {
+            "version": "1.4*",
             "removable": true
         }
     },

@@ -1,5 +1,6 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
+#    Copyright (C) 2012 Yahoo! Inc. All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -74,8 +75,8 @@ def parse():
     stop_un_group.add_option("-f", "--force",
         action="store_true",
         dest="force",
-        help="force ACTION even if no trace file found",
-        default=False)
+        help="force ACTION even if no trace file found (default: %default)",
+        default=True)
     parser.add_option_group(stop_un_group)
 
     misc_group = OptionGroup(parser, "Miscellaneous options")

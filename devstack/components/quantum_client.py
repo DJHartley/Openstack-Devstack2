@@ -18,22 +18,22 @@ from devstack import component as comp
 from devstack import log as logging
 from devstack import settings
 
-LOG = logging.getLogger("devstack.components.openstackx")
+LOG = logging.getLogger("devstack.components.quantum_client")
 
 #id
-TYPE = settings.OPENSTACK_X
+TYPE = settings.QUANTUM_CLIENT
 
 
-class OpenstackXUninstaller(comp.PythonUninstallComponent):
+class QuantumClientUninstaller(comp.PythonUninstallComponent):
     def __init__(self, *args, **kargs):
         comp.PythonUninstallComponent.__init__(self, TYPE, *args, **kargs)
 
 
-class OpenstackXInstaller(comp.PythonInstallComponent):
+class QuantumClientInstaller(comp.PythonInstallComponent):
     def __init__(self, *args, **kargs):
         comp.PythonInstallComponent.__init__(self, TYPE, *args, **kargs)
-        self.git_loc = self.cfg.get("git", "openstackx_repo")
-        self.git_branch = self.cfg.get("git", "openstackx_branch")
+        self.git_loc = self.cfg.get("git", "quantum_client_repo")
+        self.git_branch = self.cfg.get("git", "quantum_client_branch")
 
     def _get_download_locations(self):
         places = comp.PythonInstallComponent._get_download_locations(self)
@@ -44,7 +44,7 @@ class OpenstackXInstaller(comp.PythonInstallComponent):
         return places
 
 
-class OpenstackXRuntime(comp.EmptyRuntime):
+class QuantumClientRuntime(comp.EmptyRuntime):
     def __init__(self, *args, **kargs):
         comp.EmptyRuntime.__init__(self, TYPE, *args, **kargs)
 
@@ -60,6 +60,6 @@ def describe(opts=None):
     params = dict()
     params['component_opts'] = "TBD"
     params['module_name'] = __name__
-    params['description'] = __doc__ or "Handles actions for the no-vnc component."
+    params['description'] = __doc__ or "Handles actions for the quantum client component."
     out = description.format(**params)
     return out.strip("\n")

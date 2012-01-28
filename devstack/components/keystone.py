@@ -1,5 +1,6 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
+#    Copyright (C) 2012 Yahoo! Inc. All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -44,9 +45,12 @@ CFG_SECTION = 'DEFAULT'
 MANAGE_DATA_CONF = 'keystone_data.sh'
 MANAGER_CMD_ROOT = [sh.joinpths("/", "bin", 'bash')]
 
+#sync db command
+SYNC_DB_CMD = [sh.joinpths('%BINDIR%', 'keystone-manage'), 'sync_database']
+
 #what to start
 APP_OPTIONS = {
-    'keystone': ['-c', sh.joinpths('%ROOT%', CONFIG_DIR, ROOT_CONF),
+    'keystone': ['--config-file', sh.joinpths('%ROOT%', CONFIG_DIR, ROOT_CONF),
                 "--verbose", '-d',
                 '--log-config=' + sh.joinpths('%ROOT%', CONFIG_DIR, 'logging.cnf')]
 }
@@ -78,8 +82,18 @@ class KeystoneInstaller(comp.PythonInstallComponent):
     def post_install(self):
         parent_result = comp.PythonInstallComponent.post_install(self)
         self._setup_db()
+        self._sync_db()
         self._setup_data()
         return parent_result
+
+    def _sync_db(self):
+        LOG.info("Syncing keystone to database named %s", DB_NAME)
+        params = dict()
+        #it seems like this command only works if fully specified
+        #probably a bug
+        params['BINDIR'] = self.bindir
+        cmds = [{'cmd': SYNC_DB_CMD}]
+        utils.execute_template(*cmds, cwd=self.bindir, params=params)
 
     def _get_config_files(self):
         return list(CONFIGS)
@@ -190,19 +204,16 @@ def get_shared_params(cfg):
 
 
 def describe(opts=None):
-    description = """ Module: {module_name}
+    description = """
+ Module: {module_name}
   Description:
-   Handles actions for the keystone component.
+   {description}
   Component options:
    {component_opts}
-  Provides:
-   {provides_what}
 """
     params = dict()
     params['component_opts'] = "TBD"
     params['module_name'] = __name__
-    provides = [KeystoneRuntime.__name__,
-                KeystoneInstaller.__name__,
-                KeystoneUninstaller.__name__]
-    params['provides_what'] = ", ".join(sorted(provides))
-    return description.format(**params)
+    params['description'] = __doc__ or "Handles actions for the keystone component."
+    out = description.format(**params)
+    return out.strip("\n")

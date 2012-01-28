@@ -1,5 +1,6 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
+#    Copyright (C) 2012 Yahoo! Inc. All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -23,18 +24,23 @@ from devstack import shell as sh
 #id
 TYPE = settings.HORIZON
 
+#actual dir names
 ROOT_HORIZON = 'horizon'
 HORIZON_NAME = 'horizon'
 ROOT_DASH = 'openstack-dashboard'
 DASH_NAME = 'dashboard'
 
+#config files messed with
 HORIZON_PY_CONF = "horizon_settings.py"
 HORIZON_PY_CONF_TGT = ['local', 'local_settings.py']
 HORIZON_APACHE_CONF = '000-default'
 HORIZON_APACHE_TGT = ['/', 'etc', 'apache2', 'sites-enabled', '000-default']
-
 CONFIGS = [HORIZON_PY_CONF, HORIZON_APACHE_CONF]
+
+#db sync that needs to happen for horizon
 DB_SYNC_CMD = ['python', 'manage.py', 'syncdb']
+
+#special apache directory (TODO describe more about this)
 BLACKHOLE_DIR = '.blackhole'
 
 #hopefully this will be distro independent ??
@@ -209,19 +215,16 @@ class HorizonRuntime(comp.EmptyRuntime):
 
 
 def describe(opts=None):
-    description = """ Module: {module_name}
+    description = """
+ Module: {module_name}
   Description:
-   Handles actions for the horizon component.
+   {description}
   Component options:
    {component_opts}
-  Provides:
-   {provides_what}
 """
     params = dict()
-    params['component_opts'] = "N/A"
+    params['component_opts'] = "TBD"
     params['module_name'] = __name__
-    provides = [HorizonRuntime.__name__,
-                HorizonInstaller.__name__,
-                HorizonUninstaller.__name__]
-    params['provides_what'] = ", ".join(sorted(provides))
-    return description.format(**params)
+    params['description'] = __doc__ or "Handles actions for the horizon component."
+    out = description.format(**params)
+    return out.strip("\n")

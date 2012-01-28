@@ -1,5 +1,6 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
+#    Copyright (C) 2012 Yahoo! Inc. All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -43,17 +44,14 @@ VERSION_TEMPL = "%s=%s"
 class AptPackager(pack.Packager):
     def __init__(self, distro):
         pack.Packager.__init__(self, distro)
-
-    def _format_version(self, name, version):
-        #return VERSION_TEMPL % (name, version)
-        return name
+        self.auto_remove = True
 
     def _format_pkg(self, name, version):
-        if version and len(version):
-            cmd = self._format_version(name, version)
+        if version:
+            pkg_full_name = VERSION_TEMPL % (name, version)
         else:
-            cmd = name
-        return cmd
+            pkg_full_name = name
+        return pkg_full_name
 
     def _execute_apt(self, cmd, **kargs):
         return sh.execute(*cmd, run_as_root=True,
@@ -81,9 +79,10 @@ class AptPackager(pack.Packager):
         if cmds:
             cmd = APT_GET + APT_DO_REMOVE + cmds
             self._execute_apt(cmd)
-        #clean them out
-        cmd = APT_GET + APT_AUTOREMOVE
-        self._execute_apt(cmd)
+        #clean them out (if we did anything)
+        if which_removed and self.auto_remove:
+            cmd = APT_GET + APT_AUTOREMOVE
+            self._execute_apt(cmd)
         return which_removed
 
     def install_batch(self, pkgs):
