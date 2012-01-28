@@ -23,6 +23,7 @@ import os
 import platform
 import random
 import re
+import traceback
 
 #requires http://pypi.python.org/pypi/termcolor
 #but the colors make it worth it :-)
@@ -301,6 +302,43 @@ ____ ___  ____ _  _ ____ ___ ____ ____ _  _
 def center_text(text, fill, max_len):
     centered_str = '{0:{fill}{align}{size}}'.format(text, fill=fill, align="^", size=max_len)
     return centered_str
+
+
+def goodbye(worked):
+    #thx cowsay
+    cow = r'''
+ {header}
+< {top} >
+< {message} >
+ {footer}
+        \   {ear}__{ear}
+         \  ({eye}{eye})\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+'''
+    cow = cow.strip("\n\r")
+    ear = '^'
+    eye_fmt = 'o'
+    if not worked:
+        top = "Nooooo!"
+        msg = 'Failure!'
+        eye_fmt = colored("o", 'red')
+        ear = colored(ear, 'red')
+        header = "_" * (len(top)+2)
+        footer = "-" * (len(msg)+2)
+        msg = colored(msg, 'red', attrs=['bold'])
+        top = colored(top, 'red', attrs=['bold'])
+    else:
+        top = "Yippe!"
+        msg = 'Success!'
+        header = "_" * (len(top)+2)
+        footer = "-" * (len(msg)+2)
+        msg = colored(msg, 'green', attrs=['bold'])
+        top = colored(top, 'green', attrs=['bold'])
+    msg = cow.format(message=msg, eye=eye_fmt, ear=ear,
+                    top=top, header=header, footer=footer)
+    print(msg)
 
 
 def welcome(ident):
